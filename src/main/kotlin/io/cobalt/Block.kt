@@ -1,5 +1,6 @@
 package io.cobalt
 
+import java.io.Serializable
 import java.time.Instant
 import java.security.MessageDigest
 
@@ -7,7 +8,7 @@ data class Block(val timestamp: Instant,
                  val data: ByteArray,
                  val prevBlockHash: ByteArray,
                  val hash: ByteArray,
-                 val nonce: Long) {
+                 val nonce: Long) : Serializable {
 
     override fun toString(): String {
         val timeStr = this.timestamp.toString()
