@@ -6,7 +6,7 @@ import java.security.MessageDigest
 data class RunResult(val nonce: Long, val hash: ByteArray)
 
 class ProofOfWork(private val block: Block) {
-    private val targetBits = 20
+    private val targetBits = 20 // TODO: use settings
     private val target: BigInteger = BigInteger.ONE shl (256 - this.targetBits)
 
     fun validate(): Boolean {

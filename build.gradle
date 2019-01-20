@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile "org.rocksdb:rocksdbjni:5.17.2"
 }
 
 compileKotlin {

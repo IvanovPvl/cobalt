@@ -1,18 +1,28 @@
 package io.cobalt
 
-class Blockchain : Iterable<Block> {
-    private var blocks: MutableList<Block> = mutableListOf()
+import io.cobalt.storage.Bucket
+
+class Blockchain(private val storage: Bucket) {
+    private var tip: ByteArray?
 
     init {
-        val genesis = Block.new("Genesis Block".utf8Bytes(), arrayOf<Byte>().toByteArray())
-        this.blocks.add(genesis)
+        this.tip = when (this.storage.empty()) {
+            true -> {
+                val genesis = Block.genesis()
+                this.storage.putBlock(genesis)
+                genesis.hash
+            }
+
+            else -> this.storage.getLastHash()
+        }
     }
 
     fun addBlock(data: String) {
-        val lastBlock = this.blocks.last()
-        val newBlock = Block.new(data.utf8Bytes(), lastBlock.hash)
-        this.blocks.add(newBlock)
+        val lastHash = this.storage.getLastHash()
+        lastHash?.let { hash ->
+            val newBlock = Block.new(data.utf8Bytes(), hash)
+            this.storage.putBlock(newBlock)
+            this.tip = newBlock.hash
+        }
     }
-
-    override fun iterator(): Iterator<Block> = this.blocks.iterator()
 }

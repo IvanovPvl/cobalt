@@ -29,5 +29,7 @@ data class Block(val timestamp: Instant,
             val (newNonce, newHash) = pow.run()
             return block.copy(hash = newHash, nonce = newNonce)
         }
+
+        fun genesis() = new("Genesis Block".utf8Bytes(), arrayOf<Byte>().toByteArray())
     }
 }
