@@ -1,7 +1,6 @@
 package io.cobalt
 
 import java.math.BigInteger
-import java.security.MessageDigest
 
 data class RunResult(val nonce: Long, val hash: ByteArray)
 
@@ -11,8 +10,7 @@ class ProofOfWork(private val block: Block) {
 
     fun validate(): Boolean {
         val data = prepare(this.block.nonce)
-        val hash = MessageDigest.getInstance("SHA-256").digest(data)
-        val hashInt = BigInteger(1, hash)
+        val hashInt = BigInteger(1, data.sha256())
         return hashInt < this.target
     }
 
@@ -29,7 +27,7 @@ class ProofOfWork(private val block: Block) {
 
     private tailrec fun runHelper(nonce: Long): RunResult {
         val data = prepare(nonce)
-        val newHash = MessageDigest.getInstance("SHA-256").digest(data)
+        val newHash = data.sha256()
         val newHashInt = BigInteger(1, newHash)
 
         if (newHashInt < target || nonce == Long.MAX_VALUE) {

@@ -1,8 +1,7 @@
 package io.cobalt
 
-import java.io.Serializable
 import java.time.Instant
-import java.security.MessageDigest
+import java.io.Serializable
 
 data class Block(val timestamp: Instant,
                  val data: ByteArray,
@@ -22,9 +21,8 @@ data class Block(val timestamp: Instant,
         fun new(data: ByteArray, prevBlockHash: ByteArray): Block {
             val timestamp = Instant.now()
             val headers = prevBlockHash + data + timestamp.epochSecond.toByteArrayOfHexString()
-            val hash = MessageDigest.getInstance("SHA-256").digest(headers)
 
-            val block = Block(timestamp, data, prevBlockHash, hash, 0)
+            val block = Block(timestamp, data, prevBlockHash, headers.sha256(), 0)
             val pow = ProofOfWork(block)
             val (newNonce, newHash) = pow.run()
             return block.copy(hash = newHash, nonce = newNonce)
