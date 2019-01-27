@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
-public interface Serializer<T : Serializable> {
+interface Serializer<T : Serializable> {
     fun toBinary(data: T): ByteArray
     fun fromBinary(bytes: ByteArray): T
 }

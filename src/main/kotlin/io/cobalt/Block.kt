@@ -3,11 +3,12 @@ package io.cobalt
 import java.time.Instant
 import java.io.Serializable
 
-data class Block(val timestamp: Instant,
-                 val data: ByteArray,
-                 val prevBlockHash: ByteArray,
-                 val hash: ByteArray,
-                 val nonce: Long) : Serializable {
+data class Block(
+    val timestamp: Instant,
+    val data: ByteArray,
+    val prevBlockHash: ByteArray,
+    val hash: ByteArray,
+    val nonce: Long) : Serializable {
 
     override fun toString(): String {
         val timeStr = this.timestamp.toString()
@@ -28,6 +29,6 @@ data class Block(val timestamp: Instant,
             return block.copy(hash = newHash, nonce = newNonce)
         }
 
-        fun genesis() = new("Genesis Block".utf8Bytes(), arrayOf<Byte>().toByteArray())
+        fun genesis() = new("Genesis Block".toByteArray(), arrayOf<Byte>().toByteArray())
     }
 }

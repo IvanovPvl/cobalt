@@ -1,24 +1,21 @@
 package io.cobalt.storage
 
-import io.cobalt.Block
 import org.rocksdb.Options
 import org.rocksdb.RocksDB
 
 import io.cobalt.utf8
+import io.cobalt.Block
 
 public interface Bucket {
-    public fun getLastHash(): ByteArray?
     public fun getLastBlock(): Block?
     public fun getBlock(hash: ByteArray): Block?
     public fun putBlock(block: Block)
-    public fun empty() = getLastHash() == null
+    public fun empty(): Boolean
 }
 
 public class InMemoryBucket : Bucket {
     private val store = mutableMapOf<ByteArray, Block>()
-    private var lastHash: ByteArray = arrayOf<Byte>().toByteArray()
-
-    override fun getLastHash() = this.lastHash
+    private var lastHash = arrayOf<Byte>().toByteArray()
 
     override fun getLastBlock() = this.store[lastHash]
 
@@ -28,11 +25,13 @@ public class InMemoryBucket : Bucket {
         this.store[block.hash] = block
         this.lastHash = block.hash
     }
+
+    override fun empty() = this.lastHash.isEmpty()
 }
 
 public class RocksDbBucket(private val serde: Serializer<Block>) : Bucket {
     private val store: RocksDB
-    private var lastHash: ByteArray = arrayOf<Byte>().toByteArray()
+    private val lastKey = "last".toByteArray()
 
     init {
         RocksDB.loadLibrary()
@@ -40,25 +39,28 @@ public class RocksDbBucket(private val serde: Serializer<Block>) : Bucket {
         store = RocksDB.open(options, "") // TODO: use settings
     }
 
-    override fun getLastHash(): ByteArray? = this.lastHash
-
     override fun getLastBlock(): Block? {
-        val bytes = this.store[this.lastHash]
-        bytes?.let { it ->
-            return this.serde.fromBinary(it)
-        }
+        val lastHash = this.store[this.lastKey]
+        return lastHash?.let { l -> getBlock(l) }
     }
 
     override fun getBlock(hash: ByteArray): Block? {
         val bytes = this.store[hash]
-        bytes?.let { it ->
-            return this.serde.fromBinary(it)
-        }
+        return bytes?.let { b -> this.serde.fromBinary(b)}
     }
 
     override fun putBlock(block: Block) {
         val bytes = this.serde.toBinary(block)
         this.store.put(block.hash, bytes)
-        this.lastHash = block.hash
+        this.store.put(this.lastKey, block.hash)
+    }
+
+    override fun empty(): Boolean {
+        val last = this.store[this.lastKey]
+        if (last != null) {
+            return last.isEmpty()
+        }
+
+        return true
     }
 }
