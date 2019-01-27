@@ -10,8 +10,10 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile project(':core')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    compile 'com.github.ajalt:clikt:1.6.0'
 }
 
 compileKotlin {
@@ -20,4 +22,14 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'io.cobalt.cli.MainKt'
+        )
+    }
+    
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
