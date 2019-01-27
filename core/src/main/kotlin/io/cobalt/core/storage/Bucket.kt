@@ -1,10 +1,10 @@
-package io.cobalt.storage
+package io.cobalt.core.storage
 
 import org.rocksdb.Options
 import org.rocksdb.RocksDB
 
-import io.cobalt.utf8
-import io.cobalt.Block
+import io.cobalt.core.utf8
+import io.cobalt.core.Block
 
 public interface Bucket {
     public fun getLastBlock(): Block?

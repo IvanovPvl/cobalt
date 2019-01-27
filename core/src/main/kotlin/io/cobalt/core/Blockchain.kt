@@ -1,6 +1,6 @@
-package io.cobalt
+package io.cobalt.core
 
-import io.cobalt.storage.Bucket
+import io.cobalt.core.storage.Bucket
 
 class Blockchain(private val storage: Bucket) : Iterable<Block> {
     private var tip: ByteArray

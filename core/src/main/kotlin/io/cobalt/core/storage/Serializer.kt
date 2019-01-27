@@ -1,4 +1,4 @@
-package io.cobalt.storage
+package io.cobalt.core.storage
 
 import java.io.Serializable
 import java.io.ObjectInputStream

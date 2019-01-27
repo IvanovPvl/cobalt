@@ -1,4 +1,4 @@
-package io.cobalt
+package io.cobalt.core
 
 import java.nio.charset.Charset
 import java.security.MessageDigest

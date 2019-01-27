@@ -1,4 +1,4 @@
-package io.cobalt
+package io.cobalt.core
 
 import java.time.Instant
 import java.io.Serializable
